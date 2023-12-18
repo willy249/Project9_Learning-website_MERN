@@ -3,6 +3,7 @@ const app = express();
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 dotenv.config();
+const authRoute = require("./routes").auth;
 
 //連結mongoDB
 mongoose
@@ -17,6 +18,8 @@ mongoose
 //middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extends: true }));
+
+app.use("/api/auth", authRoute);
 
 app.listen(8080, () => {
   console.log("後端伺服器聆聽在port 8080。。。");

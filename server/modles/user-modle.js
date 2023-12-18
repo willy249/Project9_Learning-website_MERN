@@ -21,7 +21,7 @@ const userSchema = new Schema({
   },
   role: {
     type: String,
-    enum: ["studer", "instructor"],
+    enum: ["student", "instructor"],
     required: true,
   },
   date: {
@@ -31,7 +31,7 @@ const userSchema = new Schema({
 });
 
 // instance methods
-userSchema.methods.isStuder = function () {
+userSchema.methods.isStudent = function () {
   return this.role === "student";
 };
 
