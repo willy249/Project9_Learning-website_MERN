@@ -9,10 +9,6 @@ router.use((req, res, next) => {
   next();
 });
 
-router.get("/testAPI", (req, res) => {
-  return res.send("成功連結auth route...");
-});
-
 // 使用者註冊
 router.post("/register", async (req, res) => {
   // 驗證數據是否符合規範
