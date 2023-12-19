@@ -40,8 +40,13 @@ userSchema.methods.isInstructor = function () {
 };
 
 userSchema.methods.comparePassword = async function (password, cd) {
-  let result = await bcrypt.compare(password, this.password);
-  return cd(null, result);
+  let result;
+  try {
+    let result = await bcrypt.compare(password, this.password);
+    return cd(null, result);
+  } catch (e) {
+    return cd(e, result);
+  }
 };
 
 // mongoose middleware
