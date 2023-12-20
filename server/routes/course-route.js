@@ -7,6 +7,31 @@ router.use((req, res, next) => {
   next();
 });
 
+// 獲得系統中的所有課程
+router.get("/", async (req, res) => {
+  try {
+    let courseFound = await Course.find({})
+      .populate("instructor", ["username", "email"])
+      .exec();
+    return res.send(courseFound);
+  } catch (e) {
+    return res.status(500).send(e);
+  }
+});
+
+// 用課程id尋找課程
+router.get("/:_id", async (req, res) => {
+  let { _id } = req.params;
+  try {
+    let courseFound = await Course.findOne({ _id })
+      .populate("instructor", ["email"])
+      .exec();
+    return res.send(courseFound);
+  } catch (e) {
+    res.status(500).send(e);
+  }
+});
+
 // 課程註冊
 router.post("/", async (req, res) => {
   // 驗證數據是否符合規範
@@ -37,6 +62,60 @@ router.post("/", async (req, res) => {
     });
   } catch (e) {
     return res.status(500).send("無法創建課程。。。");
+  }
+});
+
+// 更改課程
+router.patch("/:_id", async (req, res) => {
+  // 驗證數據是否符合規範
+  let { error } = courseValidation(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
+
+  // 確認課程是否存在
+  let { _id } = req.params;
+  try {
+    let courseFound = await Course.findOne({ _id }).exec();
+    if (!courseFound) {
+      return res.status(400).send("找不到課程。無法更新課程。");
+    }
+
+    // 使用者必須是此課程講師，才能編輯課程
+    if (courseFound.instructor.equals(req.user._id)) {
+      let updatedCourse = await Course.findOneAndUpdate({ _id }, req.body, {
+        new: true,
+        runValidators: true,
+      });
+      return res.send({
+        message: "課程已經更新成功",
+        updatedCourse,
+      });
+    } else {
+      return res.status(403).send("只有此課程的講師才能編輯課程。");
+    }
+  } catch (e) {
+    return res.status(500).send(e);
+  }
+});
+
+// 刪除課程
+router.delete("/:_id", async (req, res) => {
+  // 確認課程是否存在
+  let { _id } = req.params;
+  try {
+    let courseFound = await Course.findOne({ _id }).exec();
+    if (!courseFound) {
+      return res.status(400).send("找不到課程。無法刪除課程。");
+    }
+
+    // 使用者必須是此課程講師，才能刪除課程
+    if (courseFound.instructor.equals(req.user._id)) {
+      await Course.deleteOne({ _id }).exec();
+      return res.send("課程已被刪除。");
+    } else {
+      return res.status(403).send("只有此課程的講師才能刪除課程。");
+    }
+  } catch (e) {
+    return res.status(500).send(e);
   }
 });
 
