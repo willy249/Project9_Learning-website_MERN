@@ -16,7 +16,7 @@ const EnrollComponent = ({ currentUser, setCurrentUser }) => {
   let [enrollResult, setEnrollResult] = useState([]);
 
   useEffect(() => {
-    if (currentUser && currentUser.user.role == "student") {
+    if (currentUser && currentUser.user.role === "student") {
       setMessage("");
       setSearchInput("");
 
@@ -90,13 +90,13 @@ const EnrollComponent = ({ currentUser, setCurrentUser }) => {
           </button>
         </div>
       )}
-      {currentUser && currentUser.user.role == "instructor" && (
+      {currentUser && currentUser.user.role === "instructor" && (
         <div>
           <h1>請登入學生帳號，查看最新課程。</h1>
         </div>
       )}
 
-      {currentUser && currentUser.user.role == "student" && (
+      {currentUser && currentUser.user.role === "student" && (
         <div className="search input-group mb-3">
           <input
             onChange={handleChangeInput}
@@ -121,7 +121,7 @@ const EnrollComponent = ({ currentUser, setCurrentUser }) => {
         </div>
       )}
 
-      {currentUser && searchResult && searchResult.length != 0 && (
+      {currentUser && searchResult && searchResult.length !== 0 && (
         <div>
           <p>從 API 返回的數據。</p>
           <div style={{ display: "flex", flexWrap: "wrap" }}>
@@ -144,14 +144,13 @@ const EnrollComponent = ({ currentUser, setCurrentUser }) => {
                     講師名稱: {course.instructor.username}
                   </p>
                   {!enrollResult.includes(course._id) ? (
-                    <a
-                      href="#"
+                    <button
                       onClick={handleEnroll}
                       className="card-text btn btn-primary"
                       id={course._id}
                     >
                       註冊課程
-                    </a>
+                    </button>
                   ) : (
                     <p
                       className="card text-white bg-secondary mb-3 text-center"

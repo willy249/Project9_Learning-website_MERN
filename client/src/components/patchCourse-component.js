@@ -11,15 +11,15 @@ const PatchCourseComponent = ({ currentUser, setCurrentUser }) => {
   const navigate = useNavigate();
 
   // course-component useNavigate()傳值
-  const [courseData, setCourseData] = useState(location?.state?.course || null);
+  const courseData = location?.state?.course || null;
 
   // courseData僅透過"課程頁面"當中的"修改資料"進行導向和傳值，
   // 若使用者是因刷新patch頁面等操作，導致courseData丟失，則返回於"課程頁面"。
   useEffect(() => {
-    if (!courseData && currentUser.user.role == "instructor") {
+    if (!courseData && currentUser.user.role === "instructor") {
       navigate("/course");
     }
-  }, [courseData]);
+  }, [courseData, navigate, currentUser.user.role]);
 
   let [formData, setFormData] = useState({
     title: courseData?.title || "",
@@ -73,7 +73,7 @@ const PatchCourseComponent = ({ currentUser, setCurrentUser }) => {
           <h1>只有講師可以修改課程。</h1>
         </div>
       )}
-      {currentUser && currentUser.user.role == "instructor" && (
+      {currentUser && currentUser.user.role === "instructor" && (
         <div className="form-group">
           <label htmlFor="exampleforTitle">課程標題：</label>
           <input

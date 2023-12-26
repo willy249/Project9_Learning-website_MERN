@@ -106,7 +106,7 @@ const CourseComponent = ({ currentUser, setCurrentUser }) => {
           <h1>歡迎來到學生的課程頁面。</h1>
         </div>
       )}
-      {currentUser && courseData && courseData.length != 0 && (
+      {currentUser && courseData && courseData.length !== 0 && (
         <div style={{ display: "flex", flexWrap: "wrap" }}>
           {courseData.map((course) => {
             return (
@@ -129,8 +129,7 @@ const CourseComponent = ({ currentUser, setCurrentUser }) => {
 
                   {currentUser.user.role === "instructor" && (
                     <div className="d-grid gap-3 d-md-block">
-                      <a
-                        href="#"
+                      <button
                         onClick={() => {
                           handlePatchCourse(course);
                         }}
@@ -138,27 +137,25 @@ const CourseComponent = ({ currentUser, setCurrentUser }) => {
                         style={{ margin: "1rem 1rem" }}
                       >
                         修改課程
-                      </a>
-                      <a
-                        href="#"
+                      </button>
+                      <button
                         onClick={handleDeleteCourse}
                         className="card-text btn btn-danger"
                         style={{ margin: "1rem 1rem" }}
                         id={course._id}
                       >
                         刪除課程
-                      </a>
+                      </button>
                     </div>
                   )}
                   {currentUser.user.role === "student" && (
-                    <a
-                      href="#"
+                    <button
                       onClick={hendlerUnEnroll}
                       className="card-text btn btn-danger"
                       id={course._id}
                     >
                       取消課程
-                    </a>
+                    </button>
                   )}
                 </div>
               </div>

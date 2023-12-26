@@ -25,7 +25,7 @@ const useTokenExpiration = (setCurrentUser) => {
         console.error("解析 JWT 過程中發生錯誤", error);
       }
     }
-  }, [setCurrentUser]);
+  }, [setCurrentUser, navigate]);
 };
 
 export default useTokenExpiration;

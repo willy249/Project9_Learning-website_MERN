@@ -1,5 +1,5 @@
 import axios from "axios";
-const API_URL = "http://localhost:8080/api/course";
+const API_URL = "https://react-project9-server.onrender.com/api/course";
 
 class CourseService {
   // 取得token
@@ -91,4 +91,6 @@ class CourseService {
   }
 }
 
-export default new CourseService();
+const courseService = new CourseService();
+
+export default courseService;
