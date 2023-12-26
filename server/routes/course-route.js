@@ -2,15 +2,28 @@ const router = require("express").Router();
 const Course = require("../modles").course;
 const courseValidation = require("../validation").courseValidation;
 
-router.use((req, res, next) => {
-  console.log("正在接收一個與course有關的請求。。。");
-  next();
-});
+// router.use((req, res, next) => {
+//   console.log("正在接收一個與course有關的請求。。。");
+//   next();
+// });
 
 // 獲得系統中的所有課程
 router.get("/", async (req, res) => {
   try {
     let courseFound = await Course.find({})
+      .populate("instructor", ["username", "email"])
+      .exec();
+    return res.send(courseFound);
+  } catch (e) {
+    return res.status(500).send(e);
+  }
+});
+
+// 用課程名稱尋找課程
+router.get("/findByName/:name", async (req, res) => {
+  let { name } = req.params;
+  try {
+    let courseFound = await Course.find({ title: name })
       .populate("instructor", ["username", "email"])
       .exec();
     return res.send(courseFound);
@@ -28,22 +41,75 @@ router.get("/:_id", async (req, res) => {
       .exec();
     return res.send(courseFound);
   } catch (e) {
-    res.status(500).send(e);
+    return res.status(500).send(e);
   }
 });
 
-// 課程註冊
+// 用講師id尋找課程
+router.get("/instructor/:_instructor_id", async (req, res) => {
+  let { _instructor_id } = req.params;
+  try {
+    let courseFound = await Course.find({ instructor: _instructor_id })
+      .populate("instructor", ["username", "email"])
+      .exec();
+    return res.send(courseFound);
+  } catch (e) {
+    return res.status(500).send(e);
+  }
+});
+
+// 用學生id尋找課程
+router.get("/student/:_student_id", async (req, res) => {
+  let { _student_id } = req.params;
+  try {
+    let courseFound = await Course.find({ students: _student_id })
+      .populate("instructor", ["username", "email"])
+      .exec();
+    return res.send(courseFound);
+  } catch (e) {
+    return res.status(500).send(e);
+  }
+});
+
+// 用課程id，讓學生註冊課程
+router.post("/enroll/:_id", async (req, res) => {
+  let { _id } = req.params;
+  try {
+    let courseFound = await Course.findOne({ _id }).exec();
+    courseFound.students.push(req.user._id);
+    await courseFound.save();
+    return res.send("註冊完成");
+  } catch (e) {
+    return res.status(500).send(e);
+  }
+});
+
+// 用課程id，讓學生(取消)註冊課程
+router.post("/unenroll/:_id", async (req, res) => {
+  let { _id } = req.params;
+  try {
+    let courseFound = await Course.findOne({ _id }).exec();
+    courseFound.students = courseFound.students.filter(
+      (studentId) => studentId !== req.user._id.toString()
+    );
+    await courseFound.save();
+    return res.send("已取消課程");
+  } catch (e) {
+    return res.status(500).send(e);
+  }
+});
+
+// 新增課程
 router.post("/", async (req, res) => {
   // 驗證數據是否符合規範
   let { error } = courseValidation(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
   // 確認使用者角色(role)
-  if (req.user.isStudent) {
-    return (
-      res.status(400),
-      send("只有講師才能發佈新課程。若您已經是講師，請透過講師帳號登入。")
-    );
+  if (req.user.isStudent()) {
+    return res
+      .status(400)
+      .send("只有講師才能發佈新課程。若您已經是講師，請透過講師帳號登入。");
   }
 
   // 通過上述兩點後，將資料進行儲存
