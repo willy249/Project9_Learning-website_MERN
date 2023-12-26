@@ -55,7 +55,7 @@ const PostCourseComponent = ({ currentUser, setCurrentUser }) => {
           <h1>只有講師可以發布新課程。</h1>
         </div>
       )}
-      {currentUser && currentUser.user.role == "instructor" && (
+      {currentUser && currentUser.user.role === "instructor" && (
         <div className="form-group">
           <label htmlFor="exampleforTitle">課程標題：</label>
           <input
