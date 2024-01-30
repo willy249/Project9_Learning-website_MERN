@@ -3,6 +3,7 @@ const registerValidation = require("../validation").registerValidation;
 const loginValidation = require("../validation").loginValidation;
 const User = require("../modles").user;
 const jwt = require("jsonwebtoken");
+const passport = require("passport");
 
 // router.use((req, res, next) => {
 //   console.log("正在接收一個與auth有關的請求。。。");
@@ -51,7 +52,7 @@ router.post("/login", async (req, res) => {
     if (isMatch) {
       // 製作json web token
       const tokenObject = { _id: foundUser._id, email: foundUser.email };
-      const token = jwt.sign(tokenObject, process.env.PASSPORT_SECRET);
+      const token = jwt.sign(tokenObject, process.env.PASSPORT_JWTSECRET);
       return res.send({
         message: "登入成功",
         token: "JWT " + token,
@@ -86,9 +87,13 @@ router.post("/quickLogin", async (req, res) => {
           if (isMatch) {
             // 製作json web token，設定過期時間為 10 分鐘
             const tokenObject = { _id: foundUser._id, email: foundUser.email };
-            const token = jwt.sign(tokenObject, process.env.PASSPORT_SECRET, {
-              expiresIn: "10m",
-            });
+            const token = jwt.sign(
+              tokenObject,
+              process.env.PASSPORT_JWTSECRET,
+              {
+                expiresIn: "10m",
+              }
+            );
             return res.send({
               message: "登入成功",
               token: "JWT " + token,
@@ -119,9 +124,13 @@ router.post("/quickLogin", async (req, res) => {
           if (isMatch) {
             // 製作json web token，設定過期時間為 10 分鐘
             const tokenObject = { _id: foundUser._id, email: foundUser.email };
-            const token = jwt.sign(tokenObject, process.env.PASSPORT_SECRET, {
-              expiresIn: "10m",
-            });
+            const token = jwt.sign(
+              tokenObject,
+              process.env.PASSPORT_JWTSECRET,
+              {
+                expiresIn: "10m",
+              }
+            );
             return res.send({
               message: "登入成功",
               token: "JWT " + token,

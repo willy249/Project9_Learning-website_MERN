@@ -90,14 +90,6 @@ const LoginComponent = ({ setCurrentUser }) => {
             <span>快速登入講師帳號 (演示用)</span>
           </button>
         </div>
-        <div className="alert alert-light mt-2">
-          Web Service 部署在 Render
-          免費應用，在長時間未使用時會處於休眠狀態，當有請求進來時，
-          <span className="fw-bold">
-            Render
-            會自動喚醒並啟動應用。在休眠期間，首次喚醒可能需要一些時間。。。
-          </span>
-        </div>
       </div>
     </div>
   );

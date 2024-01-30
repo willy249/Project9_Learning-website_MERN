@@ -8,6 +8,7 @@ const courseRoute = require("./routes").course;
 const passport = require("passport");
 require("./config/passport")(passport);
 const cors = require("cors");
+const port = process.env.PORT || 8080;
 
 //連結mongoDB
 mongoose
@@ -22,9 +23,11 @@ mongoose
 //middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 app.use(cors());
 
 app.use("/api/user", authRoute);
+
 // course route 應該被jwt保護
 // 如果request header 內部沒有JWT，則request就會被視為是unauthorized
 app.use(
@@ -33,6 +36,6 @@ app.use(
   courseRoute
 );
 
-app.listen(8080, () => {
-  console.log("後端伺服器聆聽在port 8080。。。");
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}!`);
 });

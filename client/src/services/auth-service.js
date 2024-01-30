@@ -1,5 +1,5 @@
 import axios from "axios";
-const API_URL = "https://react-project9-server.onrender.com/api/user";
+const API_URL = "https://project9-server.fly.dev/api/user";
 
 class AuthService {
   login(email, password) {
